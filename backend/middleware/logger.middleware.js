@@ -2,101 +2,67 @@ const morgan = require("morgan");
 const rfs = require("rotating-file-stream");
 const path = require("path");
 const todayName = require("../utils/todayFilename");
+const {prodOption, devOption} = require("../config/logger.config");
 
 let loggers = [];
-
-let streamOptions = {
-    size:"10M",
-    interval:"1d",
-    path:path.resolve('./log/prod/')
-}
-
 const filename = todayName();
 
-const generateClientStream = () => {
+const generateStream = (options, path) => {
     return rfs.createStream(() => {
-        return path.join('client_error/' + filename);
-    }, streamOptions);
+        return path.join(path + filename);
+    }, options);
 }
-
-const generateServerStream = () => {
-    return rfs.createStream(() => {
-        return path.join('server_error/' + filename);
-    }, streamOptions);
-}
-
-const generateInformationStream = () => {
-    return rfs.createStream(() => {
-        return path.join('information/' + filename);
-    }, streamOptions);
-}
-
-const generateSuccessStream = () => {
-    return rfs.createStream(() => {
-        return path.join('success/' + filename);
-    }, streamOptions);
-}
-
-const generateRedirectStream = () => {
-    return rfs.createStream(() => {
-        return path.join('redirect/' + filename);
-    }, streamOptions);
-}
-
 
 const devLogging = () => {
-    streamOptions.path = path.resolve('./log/dev/');
-
-    console.log("Hello");
     loggers.push(morgan('dev', {
-        stream: generateClientStream(),
+        stream: generateStream(devOption, '/client_error'),
         skip: (req, res) => (res.statusCode < 400 || res.statusCode > 499)
     }));
 
     loggers.push(morgan('dev', {
-        stream: generateServerStream(),
+        stream: generateStream(devOption, '/server_error'),
         skip: (req, res) => (res.statusCode < 500 || res.statusCode > 599)
     }));
 
     loggers.push(morgan('dev', {
-        stream: generateInformationStream(),
+        stream: generateStream(devOption, '/information'),
         skip: (req, res) => (res.statusCode < 100 || res.statusCode > 199)
     }));
 
     loggers.push(morgan('dev', {
-        stream: generateSuccessStream(),
+        stream: generateStream(devOption, '/success'),
         skip: (req, res) => (res.statusCode < 200 || res.statusCode > 299)
     }));
 
     loggers.push(morgan('dev', {
-        stream: generateRedirectStream(),
+        stream: generateStream(devOption, '/redirect'),
         skip: (req, res) => (res.statusCode < 300 || res.statusCode > 399)
     }));
 }
 
 const prodLogging = () => {
     loggers.push(morgan('combined', {
-        stream: generateClientStream(),
+        stream: generateStream(prodOption, '/client_error'),
         skip: (req, res) => (res.statusCode < 400 || res.statusCode > 499)
     }));
 
     loggers.push(morgan('combined', {
-        stream: generateServerStream(),
+        stream: generateStream(prodOption, '/server_error'),
         skip: (req, res) => (res.statusCode < 500 || res.statusCode > 599)
     }));
 
     loggers.push(morgan('combined', {
-        stream: generateInformationStream(),
+        stream: generateStream(prodOption, '/information'),
         skip: (req, res) => (res.statusCode < 100 || res.statusCode > 199)
     }));
 
     loggers.push(morgan('combined', {
-        stream: generateSuccessStream(),
+        stream: generateStream(prodOption, '/success'),
         skip: (req, res) => (res.statusCode < 200 || res.statusCode > 299)
     }));
 
     loggers.push(morgan('combined', {
-        stream: generateRedirectStream(),
+        stream: generateStream(prodOption, '/redirect'),
         skip: (req, res) => (res.statusCode < 300 || res.statusCode > 399)
     }));
 }
