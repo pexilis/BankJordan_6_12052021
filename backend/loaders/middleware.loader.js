@@ -7,31 +7,32 @@ const { limitRequestAPI,
     } = require("../middleware/limit.middleware");
 
 
-const globalLoad = () => {
+const globalLoad = (app) => {
     loggers.map(logger => app.use(logger));
     globalProtection.map(header => app.use(header));
     
     app.use(urlencoded());
 }
 
-const apiLoad = () => {
+const apiLoad = (app) => {
     app.use('/api/sauces', limitRequestAPI)
 }
 
-const authLoad = () => {
+const authLoad = (app) => {
     app.use('/api/auth/login', limitRequestSign);
     app.use('/api/auth/register', limitRequestRegister);
 }
 
-const staticLoad = () => {
+const staticLoad = (app) => {
     app.use('/images/', static('/public/images/sauces'))
 }
 
-const load = app => () => {
-    globalLoad();
-    apiLoad();
-    authLoad();
-    staticLoad();
+const load = app => {
+    console.log("Hello");
+    globalLoad(app);
+    apiLoad(app);
+    authLoad(app);
+    staticLoad(app);
 }
 
 
