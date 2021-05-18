@@ -4,3 +4,5 @@ const app = require("./express.loader");
 
 load(app);
 
+module.exports = app;
+
