@@ -1,15 +1,39 @@
 const {static, json, urlencoded} = require("express");
-const rateLimit = require("express-rate-limit");
 const loggers = require("../middleware/logger.middleware");
 const globalProtection = require("../middleware/helmet.middleware.js");
+const { limitRequestAPI,
+        limitRequestRegister,
+        limitRequestSign
+    } = require("../middleware/limit.middleware");
 
 
-const load = app => {
+const globalLoad = () => {
     loggers.map(logger => app.use(logger));
     globalProtection.map(header => app.use(header));
-    app.use(json());
+    
     app.use(urlencoded());
-    app.use('/images/sauces/', static('public/images/sauces/'));
 }
+
+const apiLoad = () => {
+    app.use('/api/sauces', limitRequestAPI)
+}
+
+const authLoad = () => {
+    app.use('/api/auth/login', limitRequestSign);
+    app.use('/api/auth/register', limitRequestRegister);
+}
+
+const staticLoad = () => {
+    app.use('/images/', static('/public/images/sauces'))
+}
+
+const load = app => () => {
+    globalLoad();
+    apiLoad();
+    authLoad();
+    staticLoad();
+}
+
+
 
 module.exports = load;
