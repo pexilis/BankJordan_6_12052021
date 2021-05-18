@@ -1,13 +1,12 @@
-const helmet = require("helmet");
-const cors = require("cors");
 const {static, json, urlencoded} = require("express");
-const rateLimite = require("express-rate-limit");
+const rateLimit = require("express-rate-limit");
 const loggers = require("../middleware/logger.middleware");
+const globalProtection = require("../middleware/helmet.middleware.js");
+
 
 const load = app => {
     loggers.map(logger => app.use(logger));
-    app.use(helmet());
-    app.use(cors());
+    globalProtection.map(header => app.use(header));
     app.use(json());
     app.use(urlencoded());
     app.use('/images/sauces/', static('public/images/sauces/'));
