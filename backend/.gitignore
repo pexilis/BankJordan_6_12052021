@@ -3,8 +3,4 @@ package-lock.json
 node_modules/
 docs/
 coverage/
-<<<<<<< HEAD
 log/
-=======
-log
->>>>>>> feature/appMiddleware
