@@ -9,10 +9,9 @@ const {Schema, model} = mongoose;
 const userSchema = new Schema({
     userId: {
         type: String,
-        required:true,
         unique:true,
         immutable:true,
-        set: id => uuidv4()
+        default: id => uuidv4()
     },
     email:{
         type: String,
