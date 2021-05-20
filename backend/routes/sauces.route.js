@@ -3,7 +3,10 @@ const router = express.Router();
 
 const cors = require("cors");
 const {simpleReq, complexReq} = require("../config/cors.config");
+const {isLogin} = require("../middleware/access.middleware");
 
+
+router.use(isLogin);
 router.options("*", cors(complexReq));
 router.get("*", cors(simpleReq));
 router.post("*", cors(simpleReq));

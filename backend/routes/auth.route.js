@@ -3,7 +3,9 @@ const router = express.Router();
 
 const cors = require("cors");
 const {simpleReq, complexReq} = require("../config/cors.config");
+const {isLogout} = require("../middleware/access.middleware");
 
+router.use(isLogout);
 router.options("*", cors(complexReq));
 router.get("*", cors(simpleReq));
 router.post("*", cors(simpleReq));
