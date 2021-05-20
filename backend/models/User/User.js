@@ -4,6 +4,8 @@ const {v4: uuidv4} = require("uuid");
 const UserUtils = require("./User.utils");
 const {regexPassword} = require("../../config/regex.config");
 
+const {emailMessage, passwordMessage} = require("../../config/message.config");
+
 const {Schema, model} = mongoose;
 
 const userSchema = new Schema({
@@ -15,15 +17,15 @@ const userSchema = new Schema({
     },
     email:{
         type: String,
-        required:true,
+        required:[true, emailMessage.required],
         unique:true, 
     },
     password:{
         type: String,
         required:true,
-        minLength:12,
-        maxLength:256,
-        match:regexPassword,
+        minLength:[12, passwordMessage.min],
+        maxLength:[256, passwordMessage.max],
+        match:[regexPassword, passwordMessage.format]
     }
 });
 
