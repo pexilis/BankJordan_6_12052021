@@ -3,6 +3,8 @@ const {
     asyncVerify
 } = require("../utils/AsyncJWT");
 
+
+const jwtConfig = require("../config/jwt.config");
 require("dotenv").config(); 
 
 const {
@@ -16,7 +18,7 @@ const isLogin = async(req, res, next) => {
     const token = authorization?.split(" ")[1];
 
     try {
-        const result = await asyncVerify(token, JWT_SECRET);
+        const result = await asyncVerify(token, privateKey, jwtConfig);
         const {userId} = result;
 
         if (!userId)
@@ -37,7 +39,7 @@ const isLogout = async(req, res, next) => {
     const token = authorization?.split(" ")[1];
 
     try {
-        const result = await asyncVerify(token, JWT_SECRET);
+        const result = await asyncVerify(token, privateKey, jwtConfig);
         const {userId} = result;
 
         if (!userId)
