@@ -11,7 +11,7 @@ const globalLoad = (app) => {
     loggers.map(logger => app.use(logger));
     globalProtection.map(header => app.use(header));
     
-    app.use(urlencoded());
+    app.use(json());
 }
 
 const apiLoad = (app) => {
