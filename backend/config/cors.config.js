@@ -1,16 +1,16 @@
-const complexAuth = {
+const complexReq = {
     origin:'http://localhost:8080',
-    method:'',
+    methods:["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials:true,
 };
 
-const simpleAuth = {
+const simpleReq = {
     origin:'http://localhost:8080',
 };
 
 
 module.exports = {
-    complexAuth,
-    simpleAuth
+    complexReq,
+    simpleReq
 };
