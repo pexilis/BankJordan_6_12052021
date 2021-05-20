@@ -20,6 +20,7 @@ async function hashBeforeSave(element) {
 
 async function checkPassword(email, password) {
     const model = this;
+    const encryptedEmail = aes.encrypt(email);
     const findUser = await model.findOne({email});
     const userExist = (findUser !== null);
 
