@@ -1,0 +1,23 @@
+const userModel = require("../models/User/User");
+const {asyncSign} = require("../utils/asyncJWT");
+const {jwtConfig} = require("../config/jwt.config");
+
+require("dotenv").config();
+
+const {
+    JWT_SECRET
+} = process.env;
+
+const login = async(email, password) => {
+    const findedUser = await userModel.checkPassword(email, password);
+    const {userId} = findedUser;
+    const token = await asyncSign({userId}, JWT_SECRET, jwtConfig);
+
+    return {
+        token,
+        userId
+    };
+
+};
+
+module.exports = login;
