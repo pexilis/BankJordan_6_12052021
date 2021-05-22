@@ -7,8 +7,8 @@ const {isLogout} = require("../middleware/access.middleware");
 const {undefinedMessage} = require("../config/message.config");
 
 // Services 
-const login = require("../services/login.service");
-const register = require("../services/register.service");
+const Login = require("../services/login.service");
+const Register = require("../services/register.service");
 
 router.use(isLogout);
 router.options("*", cors(complexReq));
@@ -17,10 +17,14 @@ router.post("*", cors(simpleReq));
 router.put("*", cors(simpleReq));
 router.delete("*", cors(simpleReq));
 
+
+const login = new Login();
+const register = new Register();
+
 router.post("/signup", (req, res) => {
     const {email, password} = req.body;
 
-    register(email, password).then(() => res.status(202).send({
+    register.run(email, password).then(() => res.status(202).send({
         message:"Si cette adresse est unique, votre compte sera réservé"
     })).catch(err => {
         if (err.message === undefinedMessage) {
@@ -46,8 +50,11 @@ router.post("/signup", (req, res) => {
 router.post("/login", (req, res) => {
    const {email, password} = req.body; 
 
-   login(email, password).then(data => res.status(200).send(data))
-                         .catch(err => res.status(401).end())
+   login.run(email, password).then(data => res.status(200).send(data))
+                         .catch(err => {
+                             console.log(err);
+                             res.status(401).send(err)
+                        })
    
 });
 
