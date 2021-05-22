@@ -32,6 +32,8 @@ async function checkPassword(email, password) {
     
     if (!isValidPassword)
         throw new Error();
+    
+    return findUser;
 }
 
 module.exports = {
