@@ -9,8 +9,11 @@ const emailMessage = {
     required:"L'email doit être fournie"
 }
 
+const undefinedMessage = "Les paramètres ne sont pas définis";
+
 module.exports = {
     emailMessage,
-    passwordMessage
+    passwordMessage,
+    undefinedMessage
 };
 
