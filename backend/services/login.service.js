@@ -10,19 +10,21 @@ const {
     JWT_SECRET
 } = process.env;
 
-const login = async(email, password) => {
-    if ([email, password].includes(undefined))
-        throw Error(undefinedMessage);
+class Login {
+    async run(email, password) {
+        if ([email, password].includes(undefined))
+            throw Error(undefinedMessage);
 
-    const findedUser = await userModel.checkPassword(email, password);
-    const {userId} = findedUser;
-    const token = await asyncSign({userId}, JWT_SECRET, jwtConfig);
+        const findedUser = await userModel.checkPassword(email, password);
+        const {userId} = findedUser;
+        const token = await asyncSign({userId}, JWT_SECRET, jwtConfig);
 
-    return {
-        token,
-        userId
-    };
+        return {
+            token,
+            userId
+        };
+    }
+}
 
-};
 
-module.exports = login;
+module.exports = Login;
