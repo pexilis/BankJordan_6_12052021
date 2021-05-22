@@ -4,7 +4,7 @@ const router = express.Router();
 const cors = require("cors");
 const {simpleReq, complexReq} = require("../config/cors.config");
 const {isLogout} = require("../middleware/access.middleware");
-
+const {undefinedMessage} = require("../config/message.config");
 
 // Services 
 const login = require("../services/login.service");
@@ -17,22 +17,29 @@ router.post("*", cors(simpleReq));
 router.put("*", cors(simpleReq));
 router.delete("*", cors(simpleReq));
 
-router.post("/signup", async(req, res) => {
+router.post("/signup", (req, res) => {
     const {email, password} = req.body;
 
     register(email, password).then(() => res.status(202).send({
         message:"Si cette adresse est unique, votre compte sera réservé"
     })).catch(err => {
-        const message = err.message.split(":")[2];
-        if (message.includes("Le mot de passe")){
+        if (err.message === undefinedMessage) {
             res.status(400).send({
-                message
+                message:err.message
             });
         } else {
-            res.status(202).send({
+            const message = err.message.split(":")[2];
+            if (message.includes("doit")){
+                res.status(400).send({
+                message
+                });
+            } else {
+                res.status(202).send({
                 message:"Si cette adresse est unique, votre compte sera réservé"
-            });
+                });
+            }
         }
+            
     });
 });
 
