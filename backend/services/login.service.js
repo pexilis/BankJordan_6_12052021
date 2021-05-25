@@ -1,5 +1,5 @@
 const userModel = require("../models/User/User");
-const {asyncSign} = require("../utils/asyncJWT");
+const {asyncSign} = require("../utils/asyncJWT.js");
 const {jwtConfig} = require("../config/jwt.config");
 const {undefinedMessage} = require("../config/message.config");
 

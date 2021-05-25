@@ -1,7 +1,7 @@
 const {
     asyncSign,
     asyncVerify
-} = require("../utils/AsyncJWT");
+} = require("../utils/asyncJWT.js");
 
 
 const jwtConfig = require("../config/jwt.config");
