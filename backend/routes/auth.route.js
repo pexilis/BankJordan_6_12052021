@@ -51,7 +51,7 @@ const Auth = (() => {
             Register(email, password).then(() => res.status(202).send({
                 message:"Votre compte a été réservé"
             })).catch(err => {
-                res.status(403).send({message:"}script>"});
+                res.status(403).send({message:""});
             });
         });
         
@@ -60,7 +60,7 @@ const Auth = (() => {
         
            Login(email, password).then(data => res.status(200).send(data))
                                  .catch(err => {
-                                     res.status(401).send({error:err.message})
+                                     res.status(401).send({message:"message"})
                                 })
            
         });
