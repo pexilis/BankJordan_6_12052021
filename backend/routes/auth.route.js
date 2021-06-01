@@ -1,61 +1,74 @@
-const express = require("express");
-const router = express.Router();
+const Auth = (() => {
+    let self = {};
 
-const cors = require("cors");
-const {simpleReq, complexReq} = require("../config/cors.config");
-const {isLogout} = require("../middleware/access.middleware");
-const {undefinedMessage} = require("../config/message.config");
+    /* NPM DEPENDENCIES */
+    let express = null;
+    let router = null;
+    let cors = null;
 
-// Services 
-const Login = require("../services/login.service");
-const Register = require("../services/register.service");
+    /* CONFIG */
+    let corsConfigSimple = null;
+    let corsConfigComplex = null;
 
-router.use(isLogout);
-router.options("*", cors(complexReq));
-router.get("*", cors(simpleReq));
-router.post("*", cors(simpleReq));
-router.put("*", cors(simpleReq));
-router.delete("*", cors(simpleReq));
+    /* Middleware */
+    let isLogout = null;
 
+    /* Services */
+    let Login = null;
+    let Register = null; 
 
-const login = new Login();
-const register = new Register();
+    self.initDeps = (expressDep, corsDep) => {
+        express = expressDep;
+        router = express.Router();
+        cors = corsDep;
+    }
 
-router.post("/signup", (req, res) => {
-    const {email, password} = req.body;
+    self.initConfig = (corsSimple, corsComplex) => {
+        corsConfigSimple = corsSimple;
+        corsConfigComplex = corsComplex;
+    }
 
-    register.run(email, password).then(() => res.status(202).send({
-        message:"Si cette adresse est unique, votre compte sera réservé"
-    })).catch(err => {
-        if (err.message === undefinedMessage) {
-            res.status(400).send({
-                message:err.message
+    self.initMiddlewares = (logout) => {
+        isLogout = logout;
+    }
+
+    self.initServices = (login, register) => {
+        Login = login;
+        Register = register;
+    }
+
+    self.initRoute = () => {
+        router.use(isLogout);
+        router.options("*", cors(corsConfigComplex));
+        router.get("*", cors(corsConfigSimple));
+        router.post("*", cors(corsConfigSimple));
+        router.put("*", cors(corsConfigSimple));
+        router.delete("*", cors(corsConfigSimple));
+        
+        router.post("/signup", (req, res) => {
+            const {email, password} = req.body;
+        
+            Register(email, password).then(() => res.status(202).send({
+                message:"Votre compte a été réservé"
+            })).catch(err => {
+                res.status(403).send({message:"}script>"});
             });
-        } else {
-            const message = err.message.split(":")[2];
-            if (message.includes("doit")){
-                res.status(400).send({
-                message
-                });
-            } else {
-                res.status(202).send({
-                message:"Si cette adresse est unique, votre compte sera réservé"
-                });
-            }
-        }
-            
-    });
-});
+        });
+        
+        router.post("/login", (req, res) => {
+           const {email, password} = req.body; 
+        
+           Login(email, password).then(data => res.status(200).send(data))
+                                 .catch(err => {
+                                     res.status(401).send({error:err.message})
+                                })
+           
+        });
 
-router.post("/login", (req, res) => {
-   const {email, password} = req.body; 
+        return router;
+    }
 
-   login.run(email, password).then(data => res.status(200).send(data))
-                         .catch(err => {
-                             console.log(err);
-                             res.status(401).send(err)
-                        })
-   
-});
+    return self;
+})();
 
-module.exports = router;
+module.exports = Auth;

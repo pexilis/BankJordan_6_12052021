@@ -1,6 +1,6 @@
-package-lock.json
 .env
-node_modules/
-docs/
-coverage/
 log/
+package-lock.json
+coverage/
+__test__/
+

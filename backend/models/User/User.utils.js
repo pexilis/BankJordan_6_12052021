@@ -1,26 +1,28 @@
-require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const aes = require("../../decoder/AES");
+const dependencies = (() => {
+    let self = {};
+    self.Hash = null;
+    self.Cipher = null;
 
-const {
-    SALT_ROUNDS
-} = process.env; 
+    self.initDeps = (hashDep, cipherDep) => {
+        self.Hash = hashDep;
+        self.Cipher = cipherDep
+    }
 
-const generatePassword = async(password) => {
-    let salt = await bcrypt.genSalt(Number.parseInt(SALT_ROUNDS));
-    let hash = await bcrypt.hash(password, salt);
-    return hash;
-}
+    return self;
+})();
 
-async function hashBeforeSave(element) {
+async function hashBeforeSave(str) {
+    const {Hash} = dependencies;
+
     const {password} = this;
-    const hashedPassword = await generatePassword(password);
+    const hashedPassword = await Hash.generateHash(password);
     this.password = hashedPassword;
 }
 
 async function checkPassword(email, password) {
+    const {Hash, Cipher} = dependencies;
     const model = this;
-    const encryptedEmail = aes.encrypt(email);
+    const encryptedEmail = await Cipher.encrypt(email);
     const findUser = await model.findOne({email:encryptedEmail});
     const userExist = (findUser !== null);
 
@@ -28,7 +30,7 @@ async function checkPassword(email, password) {
         throw new Error();
 
     const {password:hashedPassword} = findUser;
-    const isValidPassword = await bcrypt.compare(password, hashedPassword);
+    const isValidPassword = await Hash.compareHash(password, hashedPassword);
     
     if (!isValidPassword)
         throw new Error();
@@ -37,10 +39,7 @@ async function checkPassword(email, password) {
 }
 
 module.exports = {
-    generatePassword,
+    dependencies,
     hashBeforeSave,
     checkPassword
-}
-
-
-
+};

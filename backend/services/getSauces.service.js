@@ -1,12 +1,19 @@
-const sauceModel = require("../models/Sauce/Sauce");
+const GetSauces = (() => {
+    let self = {};
+    let sauceModel = null;
 
-class GetSauces {
-    async run() {
+    self.init = sauce => {
+        sauceModel = sauce;
+    };
+
+    self.run = async() => {
         const sauces = await sauceModel.find();
         return {
             sauces
         }
     }
-}
+
+    return self;
+})();
 
 module.exports = GetSauces;

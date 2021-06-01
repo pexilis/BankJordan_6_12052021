@@ -1,30 +1,33 @@
-const userModel = require("../models/User/User");
-const {asyncSign} = require("../utils/asyncJWT.js");
-const {jwtConfig} = require("../config/jwt.config");
-const {undefinedMessage} = require("../config/message.config");
+const LoginService = (() => {
+    let self = {};
 
+    let userModel = null;
+    let Token = null;
+    let messageConfig = null;
 
-require("dotenv").config();
+    self.init = (model, token, message) => {
+        userModel = model;
+        Token = token;
+        messageConfig = message;
+    }
 
-const {
-    JWT_SECRET
-} = process.env;
+    self.run = async(email, password) => {
+        const {undefinedMessage} = messageConfig;
 
-class Login {
-    async run(email, password) {
         if ([email, password].includes(undefined))
             throw Error(undefinedMessage);
 
         const findedUser = await userModel.checkPassword(email, password);
         const {userId} = findedUser;
-        const token = await asyncSign({userId}, JWT_SECRET, jwtConfig);
+        const token = await Token.asyncSign({userId});
 
         return {
             token,
             userId
         };
     }
-}
 
+    return self;
+})();
 
-module.exports = Login;
+module.exports = LoginService;

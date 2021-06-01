@@ -1,17 +1,22 @@
-const sauceModel = require("../models/Sauce/Sauce");
-const {undefinedMessage} = require("../config/message.config");
+const LikeSauce = (() => {
+    let self = {};
+    let sauceModel = null;
+    let messageConfig = null;
 
-class LikeSauce {
-    async run(userIdReq, userId, id, like) {
-        if ([userId, id, like, userIdReq].includes(undefined))
+    self.init = (sauce, message) => {
+        sauceModel = sauce;
+        messageConfig = message;
+    }
+
+    self.run = async(userId, id, like) => {
+        const {undefinedMessage} = messageConfig;
+        if ([userId, id, like].includes(undefined))
             throw Error(undefinedMessage);
-
-        const areSame = (userIdReq === userId);
-        if (!areSame)
-            throw Error();
-    
+        
         await sauceModel.likeSauce(userId, id, like);
     }
-}
+
+    return self;
+})();
 
 module.exports = LikeSauce;

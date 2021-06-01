@@ -1,15 +1,23 @@
-const sauceModel = require("../models/Sauce/Sauce");
-const {undefinedMessage} = require("../config/message.config");
+const GetSauce = (() => {
+    let self = {};
+    let messageConfig = null;
+    let sauceModel = null;
 
-class GetSauce {
-    async run(id, userId) {
+    self.init = (message, sauce) => {
+        messageConfig = message;
+        sauceModel = sauce;
+    }
+    
+    self.run = async(id, userId) => {
+        const {undefinedMessage} = messageConfig;
         if ([userId, id].includes(undefined))
             throw Error(undefinedMessage);
-
-        await sauceModel.canAccess(userId, id);
+            
         const sauce = await sauceModel.findById(id);
         return sauce;
     }
-}
+
+    return self;
+})();
 
 module.exports = GetSauce;

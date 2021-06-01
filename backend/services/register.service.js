@@ -1,9 +1,18 @@
-const userModel = require("../models/User/User");
-const aes = require("../decoder/AES");
-const {undefinedMessage} = require("../config/message.config");
+const Register = (() => {
+    let self = {};
 
-class Register {
-    async run(email, password) {
+    let userModel = null;
+    let aes = null;
+    let configMessage = null;
+
+    self.init = (model, cipher, message) => {
+        userModel = model;
+        aes = cipher;
+        configMessage = message;
+    }
+
+    self.run = async(email, password) => {
+        const {undefinedMessage} = configMessage;
         if ([email, password].includes(undefined))
             throw Error(undefinedMessage);
 
@@ -16,6 +25,8 @@ class Register {
         const userObj = new userModel(userData);
         await userObj.save();
     }
-}
+
+    return self;
+})();
 
 module.exports = Register;
