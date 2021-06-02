@@ -3,13 +3,14 @@ require("dotenv").config();
 const {
     SERVER_HOSTNAME,
     APPLICATION_NAME,
-    NODE_ENV
+    NODE_ENV,
+    TOKEN_EXPIRATION_TIME
 } = process.env;
 
 
 const signConfig = {
     algorithm:"HS256",
-    expiresIn:"30s",
+    expiresIn:TOKEN_EXPIRATION_TIME,
     audience:SERVER_HOSTNAME,
     issuer:APPLICATION_NAME
 };
@@ -17,7 +18,7 @@ const signConfig = {
 const verifyConfig = {
     issuer:APPLICATION_NAME,
     audiance:SERVER_HOSTNAME,
-    maxAge:"30s",
+    maxAge:TOKEN_EXPIRATION_TIME,
     algorithms:["HS256"]
 }
 
