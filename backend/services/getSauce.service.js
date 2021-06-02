@@ -8,13 +8,13 @@ const GetSauce = (() => {
         sauceModel = sauce;
     }
     
-    self.run = async(id, userId) => {
+    self.run = async(id) => {
         const {undefinedMessage} = messageConfig;
-        if ([userId, id].includes(undefined))
+        if ([id].includes(undefined))
             throw Error(undefinedMessage);
             
         const sauce = await sauceModel.findById(id);
-        return sauce;
+        return {sauce};
     }
 
     return self;
