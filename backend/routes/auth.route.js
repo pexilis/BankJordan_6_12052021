@@ -1,3 +1,8 @@
+const AuthMessages = {
+    "loginMessage":"Email ou mot de passe incorrect",
+    "registerMessage":"Cet email est déjà pris"
+}
+
 const AuthValidator = (() => {
     const AuthSchema = require("../validators/AuthValidator");
 
@@ -11,7 +16,7 @@ const AuthValidator = (() => {
             next();
         } catch(e) {
             res.status(401).json({
-                message:"Email ou mot de passe incorrect"
+                message:AuthMessages["login"]
             });
         }
     }
@@ -23,7 +28,7 @@ const AuthValidator = (() => {
             await AuthSchema.validateAsync(body);
             next();
         } catch(e) {
-            res.status(420).json({
+            res.status(400).json({
                 message:e.message
             });
         }
@@ -83,19 +88,19 @@ const Auth = (() => {
         router.post("/signup", AuthValidator.registerValidate, (req, res) => {
             const {email, password} = req.body;
         
-            Register(email, password).then(() => res.status(202).send({
+            Register(email, password).then(() => res.status(202).json({
                 message:"Votre compte a été réservé"
             })).catch(err => {
-                res.status(403).send({message:""});
+                res.status(401).json({message:AuthMessages["registerMessage"]});
             });
         });
         
         router.post("/login", AuthValidator.loginValidate, (req, res) => {
            const {email, password} = req.body; 
         
-           Login(email, password).then(data => res.status(200).send(data))
+           Login(email, password).then(data => res.status(200).json(data))
                                  .catch(err => {
-                                     res.status(401).send({message:"Email ou mot de passe incorrect"})
+                                     res.status(401).json({message:AuthMessages["login"]})
                                 })
            
         });

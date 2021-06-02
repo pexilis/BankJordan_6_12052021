@@ -12,7 +12,7 @@ const SaucesMiddlewares = (() => {
         if (!err)
             next();
     
-        res.status(400).send(err.message);
+        res.status(400).json({message:err.message});
     }
 
     self.multerHandler = require("../loader/core/imageUpload.loader");
@@ -33,7 +33,7 @@ const Validate = (() => {
             await LikeSchema.validateAsync(body);
             next();
         } catch(e) {
-            res.status(420).json({
+            res.status(400).json({
                 message:e.message
             });
         }
@@ -50,7 +50,7 @@ const Validate = (() => {
             const filename = file.filename;
 
             await DeleteSauce.deleteFile(filename);
-            res.status(420).json({
+            res.status(400).json({
                 message:e.message
             });
         }
@@ -107,9 +107,8 @@ const Sauces = (() => {
         router.get('/', (req, res) => {
             getSauces().then(data => {
                 const {sauces} = data;
-                res.send(sauces);
+                res.json(sauces);
             }).catch(err => {
-
                 res.status(404).end();
             });
         });
@@ -118,7 +117,7 @@ const Sauces = (() => {
             const {id} = req.params;
             getSauce(id).then(data => {
                 const {sauce} = data;
-                res.send(sauce);
+                res.json(sauce);
             }).catch(err => {
                 res.status(404).end();
             });
@@ -137,12 +136,12 @@ const Sauces = (() => {
                 const {sauce} = req.body;
     
                 uploadSauce(file, sauce, userId).then(data => {
-                    res.send({
+                    res.json({
                         message:"Sauce créée avec succès"
                 })
                 }).catch(err => {
-                    res.status(403).send({
-                    message:err
+                    res.status(500).json({
+                    message:"La sauce n'a pas pu être créée"
                 })
             })
         });
@@ -153,9 +152,9 @@ const Sauces = (() => {
             const {like} = req.body;
         
             likeSauce(userId, id, like).then(() => {
-                res.send({message:"Success"});
+                res.json({message:"Merci d'avoir voté"});
             }).catch(err => {
-                res.status(403).send({message:err.message});
+                res.status(500).json({message:"La sauce n'a pas pu être liké"});
             });
         });
 
@@ -164,9 +163,9 @@ const Sauces = (() => {
             const {userId} = req;
         
             deleteSauce(userId, id).then(() => {
-                res.send({message:"Success"});
+                res.json({message:"La sauce a été supprimé avec succès"});
                        }).catch(err => {
-                res.status(403).send({message:err.message});
+                res.status(500).json({message:"La sauce n'a pas pu être supprimé"});
                        })
         });
 
@@ -200,7 +199,7 @@ const Sauces = (() => {
                     updateSauce.simple(userId, id, sauce).then(() => {
                     res.end();
                     }).catch(err => {
-                        res.status(403).send(err.message)
+                        res.status(500).json({message:"La sauce n'a pas pu être mise à jour"})
                 })
     }
         });

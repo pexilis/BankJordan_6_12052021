@@ -15,7 +15,7 @@ const UploadSauce = (() => {
 
     self.run = async(file, sauce, userId) => {
         const {undefinedMessage} = configMessage;
-        if ([file, sauce].includes(undefined))
+        if ([file, sauce, userId].includes(undefined))
             throw Error(undefinedMessage);
     
         const {

@@ -22,7 +22,7 @@ const Access = (() => {
             req.userId = userId;
             next();
         }catch(e) {
-            res.status(401).end();
+            res.status(401).send({message:"Accès non autorisé"});
         }
     }
 
@@ -39,7 +39,7 @@ const Access = (() => {
             if (!userId)
                 throw Error();
     
-            res.status(401).end();
+            res.status(401).send({message:"Accès non autorisé"});
         }catch(e) {
             next();
         }
