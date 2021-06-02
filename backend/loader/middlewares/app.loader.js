@@ -32,7 +32,7 @@ Helmet.map(helmet => app.use(helmet));
 
 
 /* Static File */
-app.use('/images/', static('/public/images/sauces'));
+app.use('/images', static('./public/images/sauces'));
 
 /* JSON Parse */
 app.use('/api', json());
