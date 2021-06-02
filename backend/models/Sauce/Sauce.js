@@ -47,7 +47,7 @@ const Sauce = (() => {
                 required:true,
                 minLength:4,
                 maxLength:30,
-                lowercase:true,
+                capitalize:true,
                 get:value => value
             },
             manufacturer:{
@@ -55,7 +55,7 @@ const Sauce = (() => {
                 required:true,
                 minLength:4,
                 maxLength:30,
-                lowercase:true,
+                capitalize:true,
                 get:value => value
             },
             description:{
@@ -76,8 +76,7 @@ const Sauce = (() => {
                 type:String,
                 required:true,
                 lowercase:true,
-                match:fileRegex,
-                set:image => `${protocol}://${hostname}:${port}/public/images/${image}` 
+                set:image => `${protocol}://${hostname}/images/${image}` 
             },
             heat:{
                 type: Number,
@@ -107,6 +106,7 @@ const Sauce = (() => {
         sauceSchema.statics.likeSauce = SauceUtils.likeSauce; 
         
         const sauceModel = model('Sauce', sauceSchema);
+
         return {sauceModel, sauceSchema};
     }
 
