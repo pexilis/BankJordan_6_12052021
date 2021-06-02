@@ -42,15 +42,12 @@ const User = (() => {
             },
             email:{
                 type: String,
-                required:[true, emailMessage.required],
+                required:true,
                 unique:true, 
             },
             password:{
                 type: String,
                 required:true,
-                minLength:[12, passwordMessage.min],
-                maxLength:[256, passwordMessage.max],
-                match:[regexPassword, passwordMessage.format]
             }
         });
 
