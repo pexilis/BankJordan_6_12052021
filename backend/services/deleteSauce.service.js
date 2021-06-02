@@ -12,6 +12,11 @@ const DeleteSauce = (() => {
         sauceModel = sauce;
     }
 
+    self.deleteFile = async(imageName) => {
+        const relPathToDelete = StringModule.generateRelPath("public/images/sauces", imageName);
+        await FileHandling.asyncDelete(relPathToDelete);
+    }
+
     self.run = async(userId, id) => {
         const {undefinedMessage} = messageConfig;
         if ([userId, id].includes(undefined))
@@ -22,9 +27,8 @@ const DeleteSauce = (() => {
 
         const {imageUrl} = sauce;
         const imageName = StringModule.getFilenameFromPath(imageUrl);
-        const relPathToDelete = StringModule.generateRelPath("public/images/sauces", imageName);
-
-        await FileHandling.asyncDelete(relPathToDelete);
+        await self.deleteFile(imageName);
+        
     }
 
     return self;

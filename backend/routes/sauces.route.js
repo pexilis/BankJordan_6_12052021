@@ -46,6 +46,10 @@ const Validate = (() => {
             await SauceSchema.validateAsync(sauce);
             next();
         } catch(e) {
+            const file = req.file;
+            const filename = file.filename;
+
+            await DeleteSauce.deleteFile(filename);
             res.status(420).json({
                 message:e.message
             });
