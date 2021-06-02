@@ -1,3 +1,4 @@
+
 const SaucesMiddlewares = (() => {
     const self = {};
 
@@ -16,6 +17,42 @@ const SaucesMiddlewares = (() => {
 
     self.multerHandler = require("../loader/core/imageUpload.loader");
     
+    return self;
+})();
+
+const Validate = (() => {
+    const LikeSchema = require("../validators/LikeValidator");
+    const SauceSchema = require("../validators/SauceValidator");
+    
+    let self = {};
+    const DeleteSauce = require("../services/deleteSauce.service");
+
+    self.validateLike = async(req, res, next) => {
+        try {
+            const {body} = req;
+            await LikeSchema.validateAsync(body);
+            next();
+        } catch(e) {
+            res.status(420).json({
+                message:e.message
+            });
+        }
+        
+    }
+
+    self.validateSauce = async(req, res, next) => {
+        try {
+            const sauce = req.body.sauce ? req.body.sauce : req.body;
+            await SauceSchema.validateAsync(sauce);
+            next();
+        } catch(e) {
+            res.status(420).json({
+                message:e.message
+            });
+        }
+        
+    }
+
     return self;
 })();
 
@@ -84,7 +121,8 @@ const Sauces = (() => {
         });
 
         router.post('/', SaucesMiddlewares.multerHandler.single('image'), 
-                         SaucesMiddlewares.strToJSON, 
+                         SaucesMiddlewares.strToJSON,
+                         Validate.validateSauce, 
                          SaucesMiddlewares.handleError,
             (req, res) => { 
                 const {
@@ -105,7 +143,7 @@ const Sauces = (() => {
             })
         });
 
-        router.post('/:id/like', (req, res) => {
+        router.post('/:id/like', Validate.validateLike, (req, res) => {
             const {id} = req.params;
             const {userId} = req;
             const {like} = req.body;
@@ -129,8 +167,9 @@ const Sauces = (() => {
         });
 
         router.put('/:id', SaucesMiddlewares.multerHandler.single('image'), 
-                   SaucesMiddlewares.strToJSON, 
-                   SaucesMiddlewares.handleError,
+                           SaucesMiddlewares.strToJSON,
+                           Validate.validateSauce, 
+                           SaucesMiddlewares.handleError,
             (req, res) => {
                 const file = req.file;
                 let sauce = {};

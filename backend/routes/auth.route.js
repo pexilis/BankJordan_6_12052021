@@ -1,3 +1,38 @@
+const AuthValidator = (() => {
+    const AuthSchema = require("../validators/AuthValidator");
+
+    let self = {};
+
+    self.loginValidate = async(req, res, next) => {
+        const {body} = req;
+
+        try {
+            await AuthSchema.validateAsync(body);
+            next();
+        } catch(e) {
+            res.status(401).json({
+                message:"Email ou mot de passe incorrect"
+            });
+        }
+    }
+
+    self.registerValidate = async(req, res, next) => {
+        const {body} = req;
+
+        try {
+            await AuthSchema.validateAsync(body);
+            next();
+        } catch(e) {
+            res.status(420).json({
+                message:e.message
+            });
+        }
+    }
+
+    return self;
+})();
+
+
 const Auth = (() => {
     let self = {};
 
@@ -45,7 +80,7 @@ const Auth = (() => {
         router.put("*", cors(corsConfigSimple));
         router.delete("*", cors(corsConfigSimple));
         
-        router.post("/signup", (req, res) => {
+        router.post("/signup", AuthValidator.registerValidate, (req, res) => {
             const {email, password} = req.body;
         
             Register(email, password).then(() => res.status(202).send({
@@ -55,12 +90,12 @@ const Auth = (() => {
             });
         });
         
-        router.post("/login", (req, res) => {
+        router.post("/login", AuthValidator.loginValidate, (req, res) => {
            const {email, password} = req.body; 
         
            Login(email, password).then(data => res.status(200).send(data))
                                  .catch(err => {
-                                     res.status(401).send({message:"message"})
+                                     res.status(401).send({message:"Email ou mot de passe incorrect"})
                                 })
            
         });
