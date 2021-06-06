@@ -5,18 +5,9 @@ const {
     AES_IV,
 } = process.env;
 
-const aes = require("crypto-js/aes");
-const CryptoJS = require("crypto-js");
-const Cipher = require("../../core/Cipher");
+const {AESCipher, PrivateKeyCipher} = require("../../core/Cipher");
 
-Cipher.initDeps(
-    aes,
-    CryptoJS
-);
+const aesCipher = new AESCipher(AES_KEY, AES_IV);
+const cipher = new PrivateKeyCipher(aesCipher);
 
-Cipher.init(
-    AES_KEY,
-    AES_IV
-);
-
-module.exports = Cipher;
+module.exports = cipher;

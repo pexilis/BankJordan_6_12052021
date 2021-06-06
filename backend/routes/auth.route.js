@@ -91,6 +91,7 @@ const Auth = (() => {
             Register(email, password).then(() => res.status(202).json({
                 message:"Votre compte a été réservé"
             })).catch(err => {
+                console.log(err);
                 res.status(401).json({message:AuthMessages["registerMessage"]});
             });
         });

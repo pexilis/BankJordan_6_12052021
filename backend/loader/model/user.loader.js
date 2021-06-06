@@ -5,7 +5,7 @@ const {v4:uuidv4} = require("uuid");
 const messageConfig = require("../../config/message.config");
 const regexConfig = require("../../config/regex.config");
 
-const Cipher = require("../../core/Cipher");
+const Cipher = require("../core/cipher.loader");
 const Hash = require("../../core/Hash");
 
 const UserUtils = require("../../models/User/User.utils");

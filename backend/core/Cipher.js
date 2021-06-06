@@ -1,24 +1,17 @@
-const Cipher = (() => {
-    let self = {};
-    let aes = null;
-    let CryptoJS = null;
-    let key=null;
-    let iv=null;
+const CryptoJS = require("crypto-js");
+const aes = CryptoJS.AES;
 
-    self.initDeps = (aesDep, cryptoJSDep) => {
-        aes = aesDep;
-        CryptoJS = cryptoJSDep;
+class AESCipher {
+    constructor(key, iv) {
+        this.key = CryptoJS.enc.Utf8.parse(key);
+        this.iv = CryptoJS.enc.Utf8.parse(iv);
     }
 
-    self.init = (aesKey, aesIV) => {
-        key = CryptoJS.enc.Hex.parse(aesKey);
-        iv = CryptoJS.enc.Hex.parse(aesIV);
-    }
-
-    self.encrypt = str => {
+    async encrypt(str) {
+        const {key, iv} = this;
         return new Promise((resolve, reject) => {
             try {
-                const cipherText = aes.encrypt(str, key, {iv}).toString();
+                const cipherText = aes.encrypt(str, key, {iv, mode: CryptoJS.mode.ECB}).toString();
                 resolve(cipherText);
             } catch(e) {
                 reject(e);
@@ -26,10 +19,11 @@ const Cipher = (() => {
         });
     }
 
-    self.decrypt = str => {
+    async decrypt(str) {
+        const {key, iv} = this;
         return new Promise((resolve, reject) => {
             try {
-                const bytes  = aes.decrypt(str, key.toString(), {iv:iv.toString()});
+                const bytes  = aes.decrypt(str, key, {iv, mode: CryptoJS.mode.ECB});
                 const originalText = bytes.toString(CryptoJS.enc.Utf8);
                 resolve(originalText);
             } catch (e) {
@@ -37,8 +31,20 @@ const Cipher = (() => {
             }
         });
     }
+}
 
-    return self;
-})();
+class PrivateKeyCipher {
+    constructor(cipher) {
+        this.cipher = cipher;
+    }
 
-module.exports = Cipher;
+    async encrypt(str) {
+        return await this.cipher.encrypt(str);
+    }
+
+    async decrypt(str) {
+        return await this.cipher.decrypt(str);
+    }
+}
+
+module.exports = {AESCipher, PrivateKeyCipher};

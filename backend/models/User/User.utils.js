@@ -23,6 +23,8 @@ async function checkPassword(email, password) {
     const {Hash, Cipher} = dependencies;
     const model = this;
     const encryptedEmail = await Cipher.encrypt(email);
+
+    console.log("hello");
     const findUser = await model.findOne({email:encryptedEmail});
     const userExist = (findUser !== null);
 
