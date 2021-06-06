@@ -1,0 +1,6 @@
+.env
+log/
+package-lock.json
+coverage/
+node_modules/
+public/images/sauces/
