@@ -2,6 +2,5 @@
 log/
 package-lock.json
 coverage/
-__test__/
 node_modules/
 public/images/sauces/
