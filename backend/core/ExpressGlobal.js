@@ -23,7 +23,7 @@ const ExpressGlobal = (() => {
 
     self.listen = () => {
         self.app.listen(port, () => {
-            console.log(`Server is listening on ${protocol}://${host}:${port}`);
+            console.log(`Server is listening on ${protocol}://${host}`);
         });
     }
 
