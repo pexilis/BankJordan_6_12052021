@@ -46,10 +46,12 @@ const Validate = (() => {
             await SauceSchema.validateAsync(sauce);
             next();
         } catch(e) {
-            const file = req.file;
-            const filename = file.filename;
-
-            await DeleteSauce.deleteFile(filename);
+            if (req.file) {
+                const file = req.file;
+                const filename = file.filename;
+                await DeleteSauce.deleteFile(filename);
+            }
+            
             res.status(400).json({
                 message:e.message
             });
@@ -191,13 +193,13 @@ const Sauces = (() => {
 
                 if (file) {
                     updateSauce.withFile(userId, id, sauce, file).then(() => {
-                    res.end();
+                    res.json({message:"La sauce a été modifié avec succès"});
                 }).catch(err => {
                     res.status(403).end();
                 })
                 } else {
                     updateSauce.simple(userId, id, sauce).then(() => {
-                    res.end();
+                    res.json({message:"La sauce a été modifié avec succès"});
                     }).catch(err => {
                         res.status(500).json({message:"La sauce n'a pas pu être mise à jour"})
                 })
