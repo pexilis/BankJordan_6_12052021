@@ -1,7 +1,9 @@
-const {static, json} = require("express");
+const {static, json, urlencoded} = require("express");
 const ExpressGlobal = require("../core/express.loader");
 const app = ExpressGlobal.getApp();
 const Helmet = require("../../middlewares/helmet.middleware");
+const hpp = require("hpp");
+
 const {
     apiLimiter,
     loginLimiter,
@@ -35,7 +37,11 @@ Helmet.map(helmet => app.use(helmet));
 app.use('/images', static('./public/images/sauces'));
 
 /* JSON Parse */
+app.use(urlencoded());
 app.use('/api', json());
+app.use(hpp());
+
+
 
 app.use((err, req, res, next) => {
     res.status(400).end();
